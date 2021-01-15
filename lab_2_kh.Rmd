@@ -1,0 +1,53 @@
+---
+title: "ESM 244 Lab Week 2"
+author: "Kirsten Hodgson"
+date: "1/15/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(janitor)
+library(palmerpenguins)
+library(here)
+
+#For PCA
+library(ggfortify)
+
+#For ggplot customization
+library(readxl)
+library(gghighlight)
+library(lubridate)
+library(plotly)
+
+#To make compound figures
+library(patchwork)
+```
+
+## Part 1: PCA with penguins
+
+```{r}
+#Variables must be measured continuous
+penguin_pca <- penguins %>% 
+  select(body_mass_g, ends_with("_mm")) %>% 
+  drop_na() %>%  #If want to drop na in a certain variable, specify in fxn
+  scale() %>% 
+  prcomp()
+
+penguin_pca$rotation
+
+#Create a biplot
+
+penguin_complete <- penguins %>% 
+  drop_na(body_mass_g, ends_with("_mm")) #Matching dataset so can edit aes()
+
+autoplot(penguin_pca, #autoplot is a ggplot extension
+         data = penguin_complete,
+         colour = 'species', #need u in colour
+         loadings = TRUE,
+         loadings.label = TRUE) +
+  theme_minimal()
+```
+
